@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <title>Water Footprint Calculator</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#0EA5E9",
+              secondary: "#38BDF8",
+            },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      :where([class^="ri-"])::before { content: "\f3c2"; }
+      .progress-bar {
+      transition: width 0.3s ease-in-out;
+      }
+      input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 4px;
+      background: #374151;
+      outline: none;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #0EA5E9;
+      cursor: pointer;
+      }
+      .toggle-checkbox:checked {
+      right: 0;
+      border-color: #0EA5E9;
+      }
+      .toggle-checkbox:checked + .toggle-label {
+      background-color: #0EA5E9;
+      }
+      body {
+      background-color: #111827;
+      color: #F9FAFB;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-900 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+      <header class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-100 mb-4">
+          Water Footprint Calculator
+        </h1>
+        <p class="text-lg text-gray-300 max-w-2xl mx-auto">
+          Discover your water consumption impact and learn how to reduce your
+          water footprint. This calculator helps you understand both direct and
+          indirect water usage in your daily life.
+        </p>
+      </header>
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Water Footprint Calculator</title>
+          <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+          <style>
+              .progress-bar {
+                  transition: width 0.3s ease-in-out;
+              }
+              .highlight {
+                  padding: 2px 10px;
+                  border-radius: 4px;
+                  font-weight: bold;
+                  color: white;
+              }
+              .highlight-emerald-500 { background-color: #10b981; }
+              .highlight-blue-500 { background-color: #3b82f6; }
+              .highlight-amber-500 { background-color: #f59e0b; }
+              .highlight-red-500 { background-color: #ef4444; }
+          </style>
+      </head>
+      <body class="bg-gray-900 min-h-screen text-white">
+          <div class="max-w-6xl mx-auto px-4 py-8">
+              <header class="text-center mb-12">
+                  <h1 class="text-4xl font-bold text-gray-100 mb-4">Water Footprint Calculator</h1>
+                  <p class="text-lg text-gray-300 max-w-2xl mx-auto">
+                      Discover your water consumption impact and learn how to reduce your water footprint.
+                  </p>
+              </header>
+      
+              <!-- Water Efficiency Analysis -->
+              <div class="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+                  <h2 class="text-xl font-semibold text-gray-100 mb-4">Water Efficiency Analysis</h2>
+                  
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <!-- Usage Progress Bar -->
+                      <div>
+                          <div class="flex justify-between mb-2">
+                              <span class="text-sm text-gray-300">Your Water Usage</span>
+                              <span class="text-sm font-medium" id="usage-percent">0%</span>
+                          </div>
+                          <div class="w-full bg-gray-700 rounded-full h-3">
+                              <div id="usage-bar" class="h-3 rounded-full bg-blue-500 transition-all duration-500" style="width: 0%"></div>
+                          </div>
+                          <p class="text-xs text-gray-400 mt-1" id="usage-amount">0 liters (0% of average)</p>
+                      </div>
+                      
+                      <!-- Efficiency Progress Bar -->
+                      <div>
+                          <div class="flex justify-between mb-2">
+                              <span class="text-sm text-gray-300">Your Efficiency</span>
+                              <span class="text-sm font-medium" id="efficiency-percent">100%</span>
+                          </div>
+                          <div class="w-full bg-gray-700 rounded-full h-3">
+                              <div id="efficiency-bar" class="h-3 rounded-full transition-all duration-500 bg-emerald-500" style="width: 100%"></div>
+                          </div>
+                          <p class="text-xs text-gray-400 mt-1" id="efficiency-text">100% (Excellent)</p>
+                      </div>
+                  </div>
+              </div>
+      
+              <!-- Water Usage Calculator -->
+              <div class="bg-gray-800 rounded-lg shadow-lg p-6">
+                  <h2 class="text-xl font-semibold text-gray-100 mb-4">Daily Water Usage Calculator</h2>
+                  
+                  <div class="mb-4">
+                      <label class="block text-sm font-medium text-gray-300 mb-2">Number of Household Members</label>
+                      <input type="number" min="1" value="1" class="w-full p-2 bg-gray-900 text-white rounded" id="household-members"/>
+                  </div>
+                  
+                  <div class="space-y-4 mb-6">
+                      <div>
+                          <label class="block text-sm font-medium text-gray-300 mb-2">Daily Shower Duration (minutes)</label>
+                          <input type="number" min="0" value="0" class="w-full p-2 bg-gray-900 text-white rounded" id="shower-duration"/>
+                      </div>
+                      <div>
+                          <label class="block text-sm font-medium text-gray-300 mb-2">Toilet Flushes per Day</label>
+                          <input type="number" min="0" value="0" class="w-full p-2 bg-gray-900 text-white rounded" id="toilet-flushes"/>
+                      </div>
+                      <div>
+                          <label class="block text-sm font-medium text-gray-300 mb-2">Laundry Loads per Week</label>
+                          <input type="number" min="0" value="0" class="w-full p-2 bg-gray-900 text-white rounded" id="laundry-loads"/>
+                      </div>
+                      <div>
+                          <label class="block text-sm font-medium text-gray-300 mb-2">Dishwasher Cycles per Day</label>
+                          <input type="number" min="0" value="0" class="w-full p-2 bg-gray-900 text-white rounded" id="dishwasher-cycles"/>
+                      </div>
+                      <div>
+                          <label class="block text-sm font-medium text-gray-300 mb-2">Garden Watering (minutes/week)</label>
+                          <input type="number" min="0" value="0" class="w-full p-2 bg-gray-900 text-white rounded" id="garden-watering"/>
+                      </div>
+                  </div>
+                  
+                  <button onclick="calculateWaterUsage()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4">
+                      Calculate Water Usage
+                  </button>
+                  
+                  <!-- Results Display -->
+                  <div class="w-full bg-gray-700 rounded-full h-4 overflow-hidden mb-2">
+                      <div class="h-4 rounded-full transition-all duration-300 bg-blue-500" id="water-progress-bar" style="width: 0%;"></div>
+                  </div>
+                  
+                  <div class="flex justify-between items-center mb-2">
+                      <p class="text-gray-300">
+                          <span id="water-percentage" class="highlight highlight-blue-500">0%</span> of average
+                      </p>
+                      <p class="text-sm text-gray-400">
+                          Average: 135L/person/day
+                      </p>
+                  </div>
+                  
+                  <!-- Detailed Feedback -->
+                  <div id="water-feedback" class="p-4 rounded-lg bg-emerald-900 text-emerald-100">
+                      <h3 class="font-bold text-lg mb-2" id="feedback-title">Excellent Water Efficiency!</h3>
+                      <p id="feedback-details" class="text-sm">Your household uses 0L per day (0% of 135L average for 1 people).</p>
+                      <p id="feedback-suggestion" class="text-sm mt-2 italic">You're doing great at conserving water!</p>
+                  </div>
+              </div>
+          </div>
+      
+          <script>
+              // Constants
+              const AVERAGE_DAILY_USAGE = 135; // 135L per person per day
+      
+              function calculateWaterUsage() {
+                  // Get input values
+                  const members = parseInt(document.getElementById("household-members").value) || 1;
+                  const shower = parseInt(document.getElementById("shower-duration").value) || 0;
+                  const flushes = parseInt(document.getElementById("toilet-flushes").value) || 0;
+                  const laundry = parseInt(document.getElementById("laundry-loads").value) || 0;
+                  const dishwasher = parseInt(document.getElementById("dishwasher-cycles").value) || 0;
+                  const garden = parseInt(document.getElementById("garden-watering").value) || 0;
+      
+                  // Calculate usage in liters
+                  const showerUsage = shower * 9; // 9L per minute
+                  const flushUsage = flushes * 6; // 6L per flush
+                  const laundryUsage = (laundry / 7) * 50; // Convert weekly to daily
+                  const dishwasherUsage = dishwasher * 15; // 15L per cycle
+                  const gardenUsage = (garden / 7) * 10; // Convert weekly to daily
+      
+                  // Calculate totals
+                  const totalUsage = showerUsage + flushUsage + laundryUsage + dishwasherUsage + gardenUsage;
+                  const averageUsage = AVERAGE_DAILY_USAGE * members;
+                  const usageRatio = totalUsage / averageUsage;
+                  const usagePercent = Math.min(Math.round(usageRatio * 100), 200);
+                  
+                  // Calculate efficiency (0-100%)
+                  const efficiencyPercent = usageRatio <= 1 
+                      ? Math.round((1 - usageRatio) * 100)
+                      : 0;
+      
+                  // Update all displays
+                  updateUsageDisplay(totalUsage, averageUsage, usageRatio);
+                  updateEfficiencyDisplay(efficiencyPercent, usageRatio);
+                  updateWaterDisplay(totalUsage, averageUsage, usagePercent);
+              }
+      
+              function updateUsageDisplay(totalUsage, averageUsage, usageRatio) {
+                  const usageBar = document.getElementById("usage-bar");
+                  const usagePercentText = document.getElementById("usage-percent");
+                  const usageAmountText = document.getElementById("usage-amount");
+                  
+                  const usagePercent = Math.min(Math.round(usageRatio * 100), 200);
+                  
+                  // Update usage progress bar
+                  usageBar.style.width = Math.min(usageRatio * 100, 100) + "%";
+                  usagePercentText.textContent = usagePercent + "%";
+                  usageAmountText.textContent = `${totalUsage} liters (${usagePercent}% of average)`;
+                  
+                  // Color coding for usage
+                  if (usageRatio > 1) {
+                      usageBar.style.backgroundColor = "#ef4444"; // Red for overuse
+                  } else if (usageRatio > 0.7) {
+                      usageBar.style.backgroundColor = "#f59e0b"; // Yellow for high usage
+                  } else {
+                      usageBar.style.backgroundColor = "#3b82f6"; // Blue for normal/good
+                  }
+              }
+      
+              function updateEfficiencyDisplay(efficiencyPercent, usageRatio) {
+                  const efficiencyBar = document.getElementById("efficiency-bar");
+                  const efficiencyPercentText = document.getElementById("efficiency-percent");
+                  const efficiencyText = document.getElementById("efficiency-text");
+                  
+                  // Update efficiency progress bar
+                  efficiencyBar.style.width = efficiencyPercent + "%";
+                  efficiencyPercentText.textContent = efficiencyPercent + "%";
+                  
+                  // Set text and color based on efficiency
+                  if (usageRatio > 1) {
+                      efficiencyBar.style.backgroundColor = "#ef4444"; // Red
+                      efficiencyText.textContent = "0% (Exceeding average)";
+                  } 
+                  else if (efficiencyPercent >= 50) {
+                      efficiencyBar.style.backgroundColor = "#10b981"; // Green
+                      efficiencyText.textContent = efficiencyPercent + "% (Excellent)";
+                  }
+                  else if (efficiencyPercent >= 20) {
+                      efficiencyBar.style.backgroundColor = "#f59e0b"; // Yellow
+                      efficiencyText.textContent = efficiencyPercent + "% (Good)";
+                  }
+                  else {
+                      efficiencyBar.style.backgroundColor = "#ef4444"; // Red
+                      efficiencyText.textContent = efficiencyPercent + "% (Needs improvement)";
+                  }
+              }
+      
+              function updateWaterDisplay(totalUsage, averageUsage, percent) {
+                  const progressBar = document.getElementById("water-progress-bar");
+                  const percentElement = document.getElementById("water-percentage");
+                  const feedbackDiv = document.getElementById("water-feedback");
+                  const feedbackTitle = document.getElementById("feedback-title");
+                  const feedbackDetails = document.getElementById("feedback-details");
+                  const feedbackSuggestion = document.getElementById("feedback-suggestion");
+      
+                  // Update progress bar
+                  progressBar.style.width = Math.min(percent, 100) + "%";
+                  percentElement.textContent = percent + "%";
+      
+                  // Determine feedback level
+                  let title = "";
+                  let suggestion = "";
+                  let colorClass = "";
+                  let bgColorClass = "";
+                  let textColorClass = "";
+      
+                  if (percent < 70) {
+                      title = "Excellent Water Efficiency!";
+                      suggestion = "You're doing great at conserving water!";
+                      colorClass = "bg-emerald-500";
+                      bgColorClass = "bg-emerald-900";
+                      textColorClass = "text-emerald-100";
+                  } 
+                  else if (percent < 100) {
+                      title = "Good Water Usage";
+                      suggestion = "You're using less than average, but there's room for improvement.";
+                      colorClass = "bg-blue-500";
+                      bgColorClass = "bg-blue-900";
+                      textColorClass = "text-blue-100";
+                  } 
+                  else if (percent < 130) {
+                      title = "Average Water Usage";
+                      suggestion = "Consider adopting some water-saving habits to reduce your usage.";
+                      colorClass = "bg-amber-500";
+                      bgColorClass = "bg-amber-900";
+                      textColorClass = "text-amber-100";
+                  } 
+                  else {
+                      title = "High Water Usage";
+                      suggestion = "Your water usage is significantly above average. Please consider water conservation measures.";
+                      colorClass = "bg-red-500";
+                      bgColorClass = "bg-red-900";
+                      textColorClass = "text-red-100";
+                  }
+      
+                  // Apply styling
+                  progressBar.className = `h-4 rounded-full transition-all duration-300 ${colorClass}`;
+                  percentElement.className = `highlight ${colorClass.replace('bg-', 'highlight-')}`;
+                  feedbackDiv.className = `p-4 rounded-lg ${bgColorClass} ${textColorClass}`;
+                  
+                  // Set feedback content
+                  feedbackTitle.textContent = title;
+                  feedbackDetails.textContent = `Your household uses ${totalUsage}L per day (${percent}% of ${averageUsage}L average for ${document.getElementById("household-members").value} people).`;
+                  feedbackSuggestion.textContent = suggestion;
+                  
+                  // Show feedback
+                  feedbackDiv.classList.remove("hidden");
+              }
+      
+              // Initialize with default values
+              window.onload = function() {
+                  // Set all usage inputs to 0
+                  document.getElementById("shower-duration").value = 0;
+                  document.getElementById("toilet-flushes").value = 0;
+                  document.getElementById("laundry-loads").value = 0;
+                  document.getElementById("dishwasher-cycles").value = 0;
+                  document.getElementById("garden-watering").value = 0;
+                  
+                  // Calculate with zeros
+                  calculateWaterUsage();
+              };
+          </script>
+      </body>
+      </html>
+        
+          <h2 class="text-2xl font-semibold mb-6 text-gray-100">
+            Food Consumption
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="flex flex-col">
+              <div class="flex items-center mb-4">
+                <div
+                  class="w-16 h-16 rounded-lg overflow-hidden mr-4 flex-shrink-0"
+                >
+                  <img
+                    src="https://public.readdy.ai/ai/img_res/8835ff0ff10ee6b88d0c582c9a8cbdef.jpg"
+                    alt="Meat products"
+                    class="w-full h-full object-cover object-top"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-300 mb-2">
+                    Meat Consumption : ~
+                    15400L per kg
+                  </label>
+                  <div class="flex items-center space-x-4">
+                  </div>
+                </div>
+              </div>
+              <div class="text-xs text-gray-400 mt-1">
+                Beef: ~15,400 liters/kg | Chicken: ~4,300 liters/kg
+              </div>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-center mb-4">
+                <div
+                  class="w-16 h-16 rounded-lg overflow-hidden mr-4 flex-shrink-0"
+                >
+                  <img
+                    src="https://public.readdy.ai/ai/img_res/7c9d0b594d54355a4fb5b3a452b5c2d4.jpg"
+                    alt="Dairy products"
+                    class="w-full h-full object-cover object-top"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-300 mb-2">
+                    Dairy Products : 
+                  </label>
+                  <div class="flex items-center space-x-4">
+                    
+                  </div>
+                </div>
+              </div>
+              <div class="text-xs text-gray-400 mt-1">
+                Milk: ~1,000 liters/kg | Cheese: ~5,000 liters/kg
+              </div>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="flex flex-col">
+              <div class="flex items-center mb-4">
+                <div
+                  class="w-12 h-12 rounded-lg overflow-hidden mr-3 flex-shrink-0"
+                >
+                  <img
+                    src="https://public.readdy.ai/ai/img_res/c66a1369f7a126db709d3517bbf7b213.jpg"
+                    alt="Fruits"
+                    class="w-full h-full object-cover object-top"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-300 mb-2">
+                    Fruits : ~800–900 ml
+                  </label>
+                  <div class="flex items-center space-x-4">
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-center mb-4">
+                <div
+                  class="w-12 h-12 rounded-lg overflow-hidden mr-3 flex-shrink-0"
+                >
+                  <img
+                    src="https://public.readdy.ai/ai/img_res/366cad3e592c219b860044b3f956a611.jpg"
+                    alt="Vegetables"
+                    class="w-full h-full object-cover object-top"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-300 mb-2">
+                    potato :~ 290L per kg
+                  </label>
+                  <div class="flex items-center space-x-4">
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-center mb-4">
+                <div
+                  class="w-12 h-12 rounded-lg overflow-hidden mr-3 flex-shrink-0"
+                >
+                  <img
+                    src="https://public.readdy.ai/ai/img_res/4341f2253d93602fb52bc5d7ef7204da.jpg"
+                    alt="Grains"
+                    class="w-full h-full object-cover object-top"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-300 mb-2">
+                    Grains: ~2500L
+                  </label>
+                  <div class="flex items-center space-x-4">
+                   
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <div class="flex flex-col">
+              <div class="flex items-center mb-4">
+                <div
+                  class="w-12 h-12 rounded-lg overflow-hidden mr-3 flex-shrink-0"
+                >
+                  <img
+                    src="https://public.readdy.ai/ai/img_res/4b47f0658245332df9a507201a2d6f60.jpg"
+                    alt="Nuts & Legumes"
+                    class="w-full h-full object-cover object-top"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-300 mb-2">
+                    Nuts & Legumes: ~ 4134L
+                  </label>
+                  <div class="flex items-center space-x-4">
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-center mb-4">
+                <div
+                  class="w-12 h-12 rounded-lg overflow-hidden mr-3 flex-shrink-0"
+                >
+                  <img
+                    src="https://public.readdy.ai/ai/img_res/f057bece6492e08fe08365b3d50d5644.jpg"
+                    alt="Coffee & Tea"
+                    class="w-full h-full object-cover object-top"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-300 mb-2">
+                    Coffee: ~130L
+                  </label>
+                  <div class="flex items-center space-x-4">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-center mb-4">
+                <div
+                  class="w-12 h-12 rounded-lg overflow-hidden mr-3 flex-shrink-0"
+                >
+                  <img
+                    src="https://public.readdy.ai/ai/img_res/5244408a031532a42dba43bfde3ef314.jpg"
+                    alt="Chocolate & Sweets"
+                    class="w-full h-full object-cover object-top"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-300 mb-2">
+                    Chocolate: ~
+                  </label>
+                  <div class="flex items-center space-x-4">
+                    <button
+                      class="w-8 h-8 rounded-full border border-gray-600 flex items-center justify-center hover:bg-gray-700 text-gray-300"
+                      onclick="adjustValue('chocolate-consumption', -1)"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="text"
+                      id="chocolate-consumption"
+                      value="4"
+                      class="w-16 text-center border-none bg-gray-800 text-gray-300"
+                      readonly
+                    />
+                    <button
+                      class="w-8 h-8 rounded-full border border-gray-600 flex items-center justify-center hover:bg-gray-700 text-gray-300"
+                      onclick="adjustValue('chocolate-consumption', 1)"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Interactive Food Water Footprint</title>
+              <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+              <script src="https://cdn.tailwindcss.com"></script>
+          </head>
+          <body class="bg-gray-900 text-gray-100">
+          
+              <div class="max-w-3xl mx-auto mt-10 p-6 bg-gray-800 rounded-lg shadow-lg">
+                  <h2 class="text-2xl font-semibold mb-4 text-center">Food Water Footprint Calculator</h2>
+          
+                  <!-- Food Input Form -->
+                  <div class="mb-6">
+                      <label for="food-item" class="block text-sm font-medium text-gray-300">Select Food Item:</label>
+                      <select id="food-item" class="w-full p-2 bg-gray-700 text-white rounded mt-1">
+                          <option value="Banana">Banana</option>
+                          <option value="Apple">Apple</option>
+                          <option value="Milk">Milk</option>
+                          <option value="Chicken(Meat)">Chicken(Meat)</option>
+                          <option value="Rice">Rice</option>
+                          <option value="Onions">Onions</option>
+                          <option value="Tomatoe">Tomatoe</option>
+                      </select>
+
+                  </div>
+          
+                  <div class="mb-6">
+                      <label for="quantity" class="block text-sm font-medium text-gray-300">Enter Quantity (kg):</label>
+                      <input type="number" id="quantity" class="w-full p-2 bg-gray-700 text-white rounded mt-1" min="0.1" step="0.1">
+                  </div>
+          
+                  <button onclick="addFood()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                      Add to Chart
+                  </button>
+              </div>
+          
+              <!-- Chart Section -->
+              <div class="max-w-3xl mx-auto mt-10 p-6 bg-gray-800 rounded-lg shadow-lg">
+                  <canvas id="food-comparison-chart" class="h-64 w-full"></canvas>
+              </div>
+          
+              <!-- Total Water Footprint Display -->
+              <div class="max-w-3xl mx-auto mt-6 p-4 bg-gray-800 rounded-lg shadow-lg text-center">
+                  <h3 class="text-xl font-semibold">Total Water Footprint</h3>
+                  <p id="total-water-footprint" class="text-3xl font-bold text-blue-400">0 L</p>
+              </div>
+          
+              <script>
+                // Global variables to track water usage
+                let directWaterUsage = 0;
+                let foodWaterUsage = 0;
+                let foodLabels = [];
+                let waterData = [];
+                let chart;
+                let donutChart;
+              
+                document.addEventListener("DOMContentLoaded", function () {
+                    // Initialize both charts
+                    initFoodChart();
+                    initDonutChart();
+                    
+                    // Calculate initial water usage
+                    calculateWaterUsage();
+                });
+              
+                function initFoodChart() {
+                    const ctx = document.getElementById("food-comparison-chart").getContext("2d");
+                    
+                    // Predefined water footprint values per kg
+                    const waterFootprint = {
+                        "Banana": 860,
+                        "Apple": 822,
+                        "Milk": 1020,
+                        "Chicken(Meat)": 4325,
+                        "Rice": 2500,
+                        "Onions": 350,
+                        "Tomatoe": 180 
+                    };
+              
+                    chart = new Chart(ctx, {
+                        type: "bar",
+                        data: {
+                            labels: foodLabels,
+                            datasets: [{
+                                label: "Water Consumption (liters)",
+                                data: waterData,
+                                backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4CAF50", "#8E44AD"],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: { beginAtZero: true }
+                            }
+                        }
+                    });
+              
+                    window.addFood = function () {
+                        const foodItem = document.getElementById("food-item").value;
+                        const quantity = parseFloat(document.getElementById("quantity").value);
+              
+                        if (isNaN(quantity) || quantity <= 0) {
+                            alert("Please enter a valid quantity!");
+                            return;
+                        }
+              
+                        const waterUsage = (waterFootprint[foodItem] || 0) * quantity;
+              
+                        if (!foodLabels.includes(foodItem)) {
+                            foodLabels.push(foodItem);
+                            waterData.push(waterUsage);
+                        } else {
+                            const index = foodLabels.indexOf(foodItem);
+                            waterData[index] += waterUsage;
+                        }
+              
+                        chart.data.labels = foodLabels;
+                        chart.data.datasets[0].data = waterData;
+                        chart.update();
+                        
+                        // Update food water usage and donut chart
+                        foodWaterUsage = waterData.reduce((sum, val) => sum + val, 0);
+                        updateDonutChart();
+                        updateTotalWaterFootprint();
+                    };
+                }
+              
+                function initDonutChart() {
+                    donutChart = echarts.init(document.getElementById('water-donut-chart'));
+                    updateDonutChart();
+                    
+                    window.addEventListener('resize', function() {
+                        donutChart.resize();
+                    });
+                }
+              
+                function updateDonutChart() {
+                    const total = directWaterUsage + foodWaterUsage;
+                    
+                    // Update text displays
+                    document.getElementById('direct-water-amount').textContent = directWaterUsage.toLocaleString() + ' L';
+                    document.getElementById('indirect-water-amount').textContent = foodWaterUsage.toLocaleString() + ' L';
+                    document.getElementById('total-footprint').textContent = total.toLocaleString() + ' L';
+                    
+                    // Chart options
+                    const option = {
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: '{a} <br/>{b}: {c}L ({d}%)'
+                        },
+                        legend: {
+                            orient: 'vertical',
+                            right: 10,
+                            top: 'center',
+                            data: ['Direct Water Use', 'Indirect Water Use'],
+                            textStyle: {
+                                color: '#F9FAFB'
+                            }
+                        },
+                        series: [
+                            {
+                                name: 'Water Footprint',
+                                type: 'pie',
+                                radius: ['50%', '70%'],
+                                avoidLabelOverlap: false,
+                                itemStyle: {
+                                    borderRadius: 10,
+                                    borderColor: '#111827',
+                                    borderWidth: 2
+                                },
+                                label: {
+                                    show: false,
+                                    position: 'center'
+                                },
+                                emphasis: {
+                                    label: {
+                                        show: true,
+                                        fontSize: '18',
+                                        fontWeight: 'bold',
+                                        color: '#F9FAFB'
+                                    }
+                                },
+                                labelLine: {
+                                    show: false
+                                },
+                                data: [
+                                    {
+                                        value: directWaterUsage,
+                                        name: 'Direct Water Use',
+                                        itemStyle: { color: '#3b82f6' }
+                                    },
+                                    {
+                                        value: foodWaterUsage,
+                                        name: 'Indirect Water Use',
+                                        itemStyle: { color: '#10b981' }
+                                    }
+                                ]
+                            }
+                        ]
+                    };
+                    
+                    donutChart.setOption(option);
+                }
+              
+                function updateTotalWaterFootprint() {
+                    const totalWater = waterData.reduce((sum, value) => sum + value, 0);
+                    document.getElementById("total-water-footprint").innerText = totalWater.toLocaleString() + " L";
+                }
+              </script>
+          
+          </body>
+          </html>
+          <!-- Add this section below your existing calculator -->
+<div class="bg-gray-800 rounded-lg shadow-lg p-6 mt-8">
+  <h2 class="text-2xl font-semibold text-gray-100 mb-4">Water Usage Breakdown</h2>
+  <p class="text-gray-300 mb-6">Visualizing your direct vs indirect water consumption</p>
+  
+  <!-- Donut Chart Container -->
+  <div class="flex flex-col md:flex-row items-center">
+      <div class="w-full md:w-1/2 h-96" id="water-donut-chart"></div>
+      <div class="w-full md:w-1/2 mt-6 md:mt-0">
+          <div class="grid grid-cols-2 gap-4">
+              <div class="bg-gray-700 p-4 rounded-lg">
+                  <h3 class="text-blue-400 font-bold">Direct Water Use</h3>
+                  <p class="text-3xl font-bold mt-2" id="direct-water-amount">0 L</p>
+                  <p class="text-sm text-gray-400">From showers, toilets, etc.</p>
+              </div>
+              <div class="bg-gray-700 p-4 rounded-lg">
+                  <h3 class="text-emerald-400 font-bold">Indirect Water Use</h3>
+                  <p class="text-3xl font-bold mt-2" id="indirect-water-amount">0 L</p>
+                  <p class="text-sm text-gray-400">From food consumption</p>
+              </div>
+          </div>
+          <div class="mt-6 bg-gray-700 p-4 rounded-lg">
+              <h3 class="font-bold text-gray-100">Total Water Footprint</h3>
+              <p class="text-4xl font-bold text-blue-400 mt-2" id="total-footprint">0 L</p>
+              <div class="mt-4">
+                  <div class="flex items-center mb-2">
+                      <div class="w-4 h-4 bg-blue-500 rounded-full mr-2"></div>
+                      <span class="text-sm">Direct Water Use</span>
+                  </div>
+                  <div class="flex items-center">
+                      <div class="w-4 h-4 bg-emerald-500 rounded-full mr-2"></div>
+                      <span class="text-sm">Indirect Water Use (Food)</span>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<script>
+  // Initialize donut chart
+// Initialize donut chart if not already exists
+// Create a namespace if it doesn't exist
+window.MyApp = window.MyApp || {};
+
+// Initialize water tracking module
+MyApp.WaterTracker = {
+    donutChart: null,
+    directWaterUsage: 0,
+    foodWaterUsage: 0,
+    
+    init: function() {
+        this.donutChart = echarts.init(document.getElementById('water-donut-chart'));
+        // Rest of initialization
+    },
+    
+    updateDonutChart: function() {
+        // Use this.directWaterUsage and this.foodWaterUsage
+    }
+};
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    MyApp.WaterTracker.init();
+});
+// Make them available globally
+window.donutChart = donutChart;
+window.directWaterUsage = directWaterUsage;
+window.foodWaterUsage = foodWaterUsage;
+  
+  // Function to update the donut chart
+  function updateDonutChart() {
+      const total = directWaterUsage + foodWaterUsage;
+      
+      // Update text displays
+      document.getElementById('direct-water-amount').textContent = directWaterUsage.toLocaleString() + ' L';
+      document.getElementById('indirect-water-amount').textContent = foodWaterUsage.toLocaleString() + ' L';
+      document.getElementById('total-footprint').textContent = total.toLocaleString() + ' L';
+      
+      // Chart options
+      const option = {
+          tooltip: {
+              trigger: 'item',
+              formatter: '{a} <br/>{b}: {c}L ({d}%)'
+          },
+          legend: {
+              orient: 'vertical',
+              right: 10,
+              top: 'center',
+              data: ['Direct Water Use', 'Indirect Water Use'],
+              textStyle: {
+                  color: '#F9FAFB'
+              }
+          },
+          series: [
+              {
+                  name: 'Water Footprint',
+                  type: 'pie',
+                  radius: ['50%', '70%'],
+                  avoidLabelOverlap: false,
+                  itemStyle: {
+                      borderRadius: 10,
+                      borderColor: '#111827',
+                      borderWidth: 2
+                  },
+                  label: {
+                      show: false,
+                      position: 'center'
+                  },
+                  emphasis: {
+                      label: {
+                          show: true,
+                          fontSize: '18',
+                          fontWeight: 'bold',
+                          color: '#F9FAFB'
+                      }
+                  },
+                  labelLine: {
+                      show: false
+                  },
+                  data: [
+                      {
+                          value: directWaterUsage,
+                          name: 'Direct Water Use',
+                          itemStyle: { color: '#3b82f6' }
+                      },
+                      {
+                          value: foodWaterUsage,
+                          name: 'Indirect Water Use',
+                          itemStyle: { color: '#10b981' }
+                      }
+                  ]
+              }
+          ]
+      };
+      
+      donutChart.setOption(option);
+  }
+  
+  // Function to calculate food water footprint
+  function calculateFoodWaterFootprint() {
+      // Sum all food water usage
+      if (window.waterData && window.waterData.length > 0) {
+          foodWaterUsage = window.waterData.reduce((sum, val) => sum + val, 0);
+      } else {
+          foodWaterUsage = 0;
+      }
+      updateDonutChart();
+  }
+  
+  // Modify your existing calculateWaterUsage function
+  function calculateWaterUsage() {
+      // Get input values
+      const members = parseInt(document.getElementById("household-members").value) || 1;
+      const shower = parseInt(document.getElementById("shower-duration").value) || 0;
+      const flushes = parseInt(document.getElementById("toilet-flushes").value) || 0;
+      const laundry = parseInt(document.getElementById("laundry-loads").value) || 0;
+      const dishwasher = parseInt(document.getElementById("dishwasher-cycles").value) || 0;
+      const garden = parseInt(document.getElementById("garden-watering").value) || 0;
+
+      // Calculate usage in liters
+      const showerUsage = shower * 9; // 9L per minute
+      const flushUsage = flushes * 6; // 6L per flush
+      const laundryUsage = (laundry / 7) * 50; // Convert weekly to daily
+      const dishwasherUsage = dishwasher * 15; // 15L per cycle
+      const gardenUsage = (garden / 7) * 10; // Convert weekly to daily
+
+      // Calculate totals
+      directWaterUsage = showerUsage + flushUsage + laundryUsage + dishwasherUsage + gardenUsage;
+      const averageUsage = AVERAGE_DAILY_USAGE * members;
+      const usageRatio = directWaterUsage / averageUsage;
+      const usagePercent = Math.min(Math.round(usageRatio * 100), 200);
+      
+      // Calculate efficiency (0-100%)
+      const efficiencyPercent = usageRatio <= 1 
+          ? Math.round((1 - usageRatio) * 100)
+          : 0;
+
+      // Update all displays
+      updateUsageDisplay(directWaterUsage, averageUsage, usageRatio);
+      updateEfficiencyDisplay(efficiencyPercent, usageRatio);
+      updateWaterDisplay(directWaterUsage, averageUsage, usagePercent);
+      
+      // Update the donut chart with new values
+      calculateFoodWaterFootprint();
+  }
+  
+  // Also update when food items are added
+  window.addFood = function() {
+      const foodItem = document.getElementById("food-item").value;
+      const quantity = parseFloat(document.getElementById("quantity").value);
+
+      if (isNaN(quantity) || quantity <= 0) {
+          alert("Please enter a valid quantity!");
+          return;
+      }
+
+      const waterUsage = (waterFootprint[foodItem] || 0) * quantity;
+
+      if (!foodLabels.includes(foodItem)) {
+          foodLabels.push(foodItem);
+          waterData.push(waterUsage);
+      } else {
+          const index = foodLabels.indexOf(foodItem);
+          waterData[index] += waterUsage;
+      }
+
+      updateChart();
+      
+      // Update the food water footprint and donut chart
+      calculateFoodWaterFootprint();
+  };
+  
+  // Initialize with empty chart
+  updateDonutChart();
+  window.addEventListener('resize', function() {
+      donutChart.resize();
+  });
+</script>
+          <h2 class="text-2xl font-semibold mb-6 text-gray-100">
+            Recommendations
+        </h2>
+        <div class="space-y-6" id="recommendations-list"></div>
+        
+        <script>
+            const recommendationsData = [
+                {
+                    title: "Install Water-Efficient Showerhead",
+                    description: "Can save up to 2,700 liters of water per month.",
+                    difficulty: "Easy",
+                    impact: "High",
+                    link: "https://www.epa.gov/watersense/showerheads",
+                },
+                {
+                    title: "Fix Leaking Taps",
+                    description: "Save up to 750 liters of water per month.",
+                    difficulty: "Easy",
+                    impact: "Medium",
+                    link: "https://www.energy.gov/energysaver/do-it-yourself-home-energy-audits",
+                },
+                {
+                    title: "Collect Rainwater",
+                    description: "Reduce garden water usage by 50%.",
+                    difficulty: "Medium",
+                    impact: "High",
+                    link: "https://www.epa.gov/soakuptherain/soak-rain-rain-barrels",
+                },
+                {
+                    title: "Reduce Meat Consumption",
+                    description: "Switching to plant-based meals twice a week can save thousands of liters.",
+                    difficulty: "Medium",
+                    impact: "Very High",
+                    link: "https://www.waterfootprint.org/en/water-footprint/product-water-footprint/water-footprint-crop-and-animal-products/",
+                },
+                {
+                    title: "Install Dual-Flush Toilet",
+                    description: "Save up to 4,000 liters of water per month for a family of four.",
+                    difficulty: "Medium",
+                    impact: "High",
+                    link: "https://www.epa.gov/watersense/residential-toilets",
+                },
+                {
+                    title: "Use Full Loads for Laundry & Dishwasher",
+                    description: "Save up to 1,000 liters of water per month.",
+                    difficulty: "Easy",
+                    impact: "Medium",
+                    link: "https://www.energystar.gov/products/appliances/clothes_washers/tips",
+                }
+            ];
+        
+            function renderRecommendations() {
+                const container = document.getElementById("recommendations-list");
+                container.innerHTML = "";
+        
+                recommendationsData.forEach((rec) => {
+                    const recElement = document.createElement("div");
+                    recElement.classList.add("p-4", "bg-gray-800", "rounded-lg", "shadow-lg", "border-l-4");
+        
+                    // Set border color based on impact
+                    switch (rec.impact) {
+                        case "Very High": recElement.classList.add("border-red-500"); break;
+                        case "High": recElement.classList.add("border-green-500"); break;
+                        case "Medium": recElement.classList.add("border-yellow-500"); break;
+                        default: recElement.classList.add("border-gray-500");
+                    }
+        
+                    recElement.innerHTML = `
+                        <h3 class="text-lg font-bold text-blue-400">${rec.title}</h3>
+                        <p class="text-gray-300">${rec.description}</p>
+                        <div class="flex justify-between mt-2 text-sm">
+                            <span class="text-gray-400"><strong>Difficulty:</strong> ${rec.difficulty}</span>
+                            <span class="text-gray-400"><strong>Impact:</strong> ${rec.impact}</span>
+                        </div>
+                        <a href="${rec.link}" target="_blank" class="block mt-3 text-blue-400 hover:underline">
+                            Learn More
+                        </a>
+                    `;
+                    container.appendChild(recElement);
+                });
+            }
+        
+            // Render recommendations on page load
+            document.addEventListener("DOMContentLoaded", renderRecommendations);
+        </script>
+
+<section class="bg-gray-900 text-gray-100 py-16 px-4">
+  <div class="max-w-6xl mx-auto">
+      <!-- Water Wave Animation Background -->
+      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-900 to-gray-800 p-8 shadow-2xl">
+          <!-- Animated water waves -->
+          <div class="absolute inset-0 overflow-hidden opacity-20">
+              <div class="wave -left-20 top-10"></div>
+              <div class="wave -left-40 top-20"></div>
+              <div class="wave -left-10 top-32"></div>
+          </div>
+          
+          <div class="relative z-10">
+              <h2 class="text-4xl font-bold text-center mb-8">
+                  <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">About Our Mission</span>
+              </h2>
+              
+              <div class="grid md:grid-cols-2 gap-12 items-center">
+                  <!-- Left Column - Mission Statement -->
+                  <div class="space-y-6">
+                      <p class="text-lg leading-relaxed">
+                          Every drop counts. At <span class="font-semibold text-blue-300">AquaTrack</span>, we're revolutionizing how individuals understand and reduce their water footprint through cutting-edge digital solutions.
+                      </p>
+                      
+                      <div class="space-y-4">
+                          <div class="flex items-start">
+                              <div class="flex-shrink-0 mt-1">
+                                  
+                              </div>
+            
+                          </div>
+                          
+                          <div class="flex items-start">
+                              <div class="flex-shrink-0 mt-1">
+                                  <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
+                                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                          <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                      </svg>
+                                  </div>
+                              </div>
+                              <p class="ml-3 text-gray-300">
+                                  Featured in <span class="font-bold text-blue-300">Environmental Tech Review</span> as a top sustainability innovation.
+                              </p>
+                          </div>
+                      </div>
+                  </div>
+                  
+                 <!-- Right Column - Water Drop Visualization -->
+<div class="relative h-64">
+  <div class="absolute inset-0 flex items-center justify-center">
+    <!-- Single water droplet with animation -->
+    <div class="water-droplet">
+      <div class="droplet-core"></div>
+    </div>
+  </div>
+  <div class="absolute bottom-0 left-0 right-0 text-center">
+    <p class="text-sm text-blue-300 font-mono">Tracking every drop for a sustainable future</p>
+  </div>
+</div>
+
+<style>
+  /* Water droplet styling */
+  .water-droplet {
+    width: 24px;
+    height: 32px;
+    position: relative;
+    animation: droplet-fall 2.5s ease-in infinite;
+  }
+  
+  .droplet-core {
+    width: 100%;
+    height: 100%;
+    background: rgba(14, 165, 233, 0.8);
+    border-radius: 50% 50% 55% 55%;
+    transform: rotate(180deg);
+    filter: blur(0.5px);
+    box-shadow:
+      inset -2px -2px 4px rgba(255,255,255,0.3),
+      inset 2px 2px 4px rgba(0,0,0,0.2),
+      0 0 8px rgba(56, 189, 248, 0.6);
+  }
+  
+  /* Droplet falling animation */
+  @keyframes droplet-fall {
+    0% {
+      transform: translateY(-150px) scale(0.6);
+      opacity: 0;
+    }
+    20% {
+      opacity: 0.8;
+      transform: translateY(-120px) scale(0.8);
+    }
+    80% {
+      transform: translateY(-30px) scale(1);
+    }
+    90% {
+      transform: translateY(-10px) scale(1.05);
+    }
+    100% {
+      transform: translateY(0) scale(0);
+      opacity: 0;
+    }
+  }
+  
+  /* Ripple effect when droplet hits */
+  .water-droplet::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 8px;
+    background: rgba(56, 189, 248, 0.3);
+    border-radius: 50%;
+    bottom: 0;
+    left: 0;
+    animation: ripple 0.6s ease-out 2.3s infinite;
+    transform: scale(0);
+    opacity: 0;
+  }
+  
+  @keyframes ripple {
+    0% {
+      transform: scale(0);
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+</style>
+                    
+                  </div>
+              </div>
+          </div>
+      </div>
+      
+      <!-- Team Section -->
+      <div class="mt-16">
+          <h3 class="text-2xl font-bold text-center mb-8 text-blue-400">Under Guidance</h3>
+          
+          <div class="max-w-2xl mx-auto bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+              <div class="md:flex">
+                  <div class="md:flex-shrink-0">
+                      <div class="relative h-full w-48">
+                          <img class="h-full w-full object-cover" src="" alt="Professor">
+                          <div class="absolute inset-0 bg-blue-500 opacity-20"></div>
+                      </div>
+                  </div>
+                  <div class="p-8">
+                      <div class="uppercase tracking-wide text-sm text-blue-400 font-semibold">Mentor & Advisor</div>
+                      <h4 class="mt-2 text-xl font-semibold text-white">Prof. Shashi Shekhar T R</h4>
+                      <p class="mt-3 text-gray-300">
+                          With over 15 years of experience in environmental science and sustainability research, Professor Shekhar provides invaluable guidance to our mission.
+                      </p>
+                     
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</section>
+
+<style>
+  /* Water wave animation */
+  .wave {
+      position: absolute;
+      width: 200%;
+      height: 100%;
+      background-repeat: repeat no-repeat;
+      background-position: 0 bottom;
+      background-size: 50% 100px;
+      animation: wave 15s linear infinite;
+  }
+  
+  .wave:nth-child(2) {
+      animation-duration: 10s;
+      opacity: 0.5;
+  }
+  
+  .wave:nth-child(3) {
+      animation-duration: 20s;
+      opacity: 0.3;
+  }
+  
+  @keyframes wave {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+  }
+  
+  /* Water drop animation */
+  .water-drop {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(14, 165, 233, 0.8), rgba(56, 189, 248, 0.6));
+      position: relative;
+      filter: blur(1px);
+      box-shadow: 
+          inset -10px -10px 20px rgba(0,0,0,0.2),
+          inset 10px 10px 20px rgba(255,255,255,0.2),
+          0 0 30px rgba(14, 165, 233, 0.4);
+      animation: float 3s ease-in-out infinite;
+  }
+  
+  .inner-drop {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: rgba(255,255,255,0.4);
+      border-radius: 50%;
+      top: 20px;
+      left: 30px;
+      filter: blur(2px);
+  }
+  
+  @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+  }
+  
+  .animate-float {
+      animation: float 3s ease-in-out infinite;
+  }
+</style>
+    </section>
+    
+  </body>
+</html>
